@@ -1,9 +1,13 @@
 #include "backupSetup.h"
 
 int main(int argc, char* argv[]) {
-    char src_dir[MAXDIRNAME] = {'\0'};
-    char dest_dir[MAXDIRNAME] = {'\0'};
+    printf("\t!!!!!!!!!!!!!!!!!!!!!!!!!\n\t!!!!  Г  О  Й  Д  А  !!!!\n\t!!!!!!!!!!!!!!!!!!!!!!!!!\n\n");
+  
+    printf("Source name: \"%s\". \n", argv[1]);
+    printf("Dest name: \"%s\". \n\n", argv[2]);
 
-    strcpy(argv[1], src_dir);
-    strcpy(argv[2], dest_dir);
+    printf("[____LIST_OF_SORCE____]\n");
+    listFiles(argv[1]);
+    printf("\n[____LIST_OF_DEST____]\n");
+    listFiles(argv[2]);
 }
