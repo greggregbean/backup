@@ -1,6 +1,7 @@
 #ifndef BACKUP_SETUP_H
 #define BACKUP_SETUP_H
 
+#include <dirent.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -9,8 +10,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define MAXDIRNAME 100
+#define MAXDIRNAME 1000
 
-void rec_cpy(char* src_dir, char* dst_dir);
+void listFiles(const char* dirname);
 
 #endif
