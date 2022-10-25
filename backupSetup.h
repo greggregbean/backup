@@ -13,5 +13,6 @@
 #define MAXDIRNAME 1000
 
 void listFiles(const char* dirname);
+struct dirent* find(struct dirent* entity, DIR* dir);
 
 #endif
