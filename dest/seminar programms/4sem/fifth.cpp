@@ -12,7 +12,7 @@ int main() {
     if (mknod(fifo_name, S_IFIFO | 0666, 0)) {
         printf("Cant create fifo. \n");
         exit(-1);
-    }
+    }   
 
     int fd = 0;
     

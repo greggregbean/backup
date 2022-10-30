@@ -9,10 +9,15 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <math.h>
 
-#define MAXDIRNAME 1000
+#define MAX_NUM_SIZE 100
+#define MAX_COMMAND_SIZE 100
+#define MAX_BUF_SIZE 10000
 
-void listFiles(const char* dirname);
-struct dirent* find(struct dirent* entity, DIR* dir);
+char* num_to_str(size_t num);
+void listFiles(const char* dirname, const char* file);
+void update_check(const char* dirname, size_t minutes);
+void update_dir(const char* dirname);
 
 #endif

@@ -1,74 +1,118 @@
 #include "backupSetup.h"
 
-void listFiles(const char* dirname) {
-    DIR* dir = opendir(dirname);
-    if(dir == NULL) printf("Failed to open \"%s\"! \n", dirname);
+void update_dest(const char* dest) {
+    char buf[MAX_BUF_SIZE] = {'\0'};
+
+    int fd = open("file1.txt", O_RDONLY);
+    if(fd == -1) {
+        printf("Failed to open \"%s\". \n", dirname);
+        exit(-1);
+    }
+
+    if(read(fd, buf, MAX_BUF_SIZE) == -1) {
+        printf("Failed to read from\"%s\". \n", dirname);
+        exit(-1);
+    }
+    
+    
+}
+
+char* num_to_str(size_t num) {
+    size_t num_cpy = num;
+
+    char* str = (char*) calloc(MAX_NUM_SIZE, sizeof(char)); 
+    char rev_str [MAX_NUM_SIZE] = {'\0'};
+
+    int i = 0;
+    while(num != 0) {
+        rev_str[i] = '0' + num % 10;
+        num /= 10;
+        i++;
+    }
+    printf("rev_str: \"%s\". \n", rev_str);
+
+    size_t len = strlen(rev_str);
+    for(int k = 0; k != len; k++) {
+        str[k] = rev_str[len-k-1];
+    }
+    printf("str: \"%s\". \n", str);
+
+    return str;
+}
+
+void update_check(const char* dirname, size_t minutes) {
+    if(dirname == NULL) {
+        printf("Wrong name of directory! \n");
+        exit(-1);
+    }
+
+    printf("Finding files updated %ld min ago in \"%s\". \n", minutes, dirname);
+
+    pid_t pid = fork();
+
+    int child_stat;
+    wait(&child_stat);
+
+    if(pid < 0) {
+        printf("Failed to run child process. \n");
+        exit(-1);
+    }
+
+    else if(pid > 0) {
+        printf("Parent procces. PID = %d. Just waiting for child process. \n", getpid());
+    }
+
+    else {
+        printf("Child process. PID = %d. We should run find. \n", getpid());
+
+        char find_command[MAX_COMMAND_SIZE] = "find ";
+        strcat(find_command, dirname);
+        strcat(find_command, " -mmin ");
+        strcat(find_command, num_to_str(minutes));
+        strcat(find_command, " > ");
+        strcat(find_command, "res_of_find.txt"); 
+        execl("/bin/bash", "/bin/bash", "-c",  find_command, NULL);
+        
+    }
+}
+
+void listFiles(const char* dirname, const char* file) {
+    if(dirname == NULL) {
+        printf("Wrong name of directory! \n");
+        exit(-1);
+    }
+
+    if(file == NULL) {
+        printf("Wrong name of file! \n");
+        exit(-1);
+    }
 
     printf("Reading files in: \"%s\". \n", dirname);
 
-    struct dirent* entity;
-    entity = readdir(dir);
+    pid_t pid = fork();
 
-    while(entity != NULL) {
-        printf("%hhd %s/%s\n", entity->d_type, dirname, entity->d_name);
-        if(entity->d_type == DT_DIR && (strcmp(entity->d_name, ".") != 0) && (strcmp(entity->d_name, "..") != 0)) {
-            char path[MAXDIRNAME] = {'\0'};
-            strcat(path, dirname);
-            strcat(path, "/");
-            strcat(path, entity->d_name);
-            listFiles(path);
-        }
-        entity = readdir(dir);
+    int child_stat;
+    wait(&child_stat);
+
+    if(pid < 0) {
+        printf("Failed to run child process. \n");
+        exit(-1);
     }
 
-    closedir(dir);
-}
-
-struct dirent* find(struct dirent* entity, DIR* dir) {
-    printf("Looking for \"%s\". \n", entity -> d_name);
-    
-    seekdir(dir, 0);
-    struct dirent* iter = readdir(dir);
-
-    while(!((strcmp(iter -> d_name, entity -> d_name) == 0) && (iter -> d_type != entity -> d_type)) && (iter != NULL)) {
-        iter = readdir(dir);
+    else if(pid > 0) {
+        printf("Parent procces. PID = %d. Just waiting for child process. \n", getpid());
     }
 
-    if(iter != NULL) printf("FOUND! \n");
-    else printf("NOT FOUND. \n");
+    else {
+        printf("Child process. PID = %d. We should run ls in file. \n", getpid());
 
-    return iter; 
+        char ls_command[MAX_COMMAND_SIZE] = "ls ";
+        strcat(ls_command, "-R ");
+        strcat(ls_command, dirname);
+        strcat(ls_command, " > ");
+        strcat(ls_command, file); 
+        execl("/bin/bash", "/bin/bash", "-c",  ls_command, NULL);
+    }
 }
 
-// void rec_backup(const char* source, char* dest) {
-//     DIR* src_dir = opendir(source);
-//     if(src_dir == NULL) printf("Failed to open source dir \"%s\"! \n", source); 
-
-//     DIR* dst_dir = opendir(dest);
-//     if(dst_dir == NULL) printf("Failed to open dest dir \"%s\"! \n", dest);
-   
-
-//     printf("Checking files in: \"%s\". \n", source);
-
-//     struct dirent* src_entity;
-//     src_entity = readdir(source);
-
-//     while(src_entity != NULL) {
-//         if(entity -> d_type == DT_DIR && (strcmp(entity -> d_name, ".") != 0) && (strcmp(entity -> d_name, "..") != 0)) {
-//             dirent* res_of_find = find(entity, dest);
-//             if(res_of_find == NULL) {
-//                 printf("There is no \"%s\" in \"%s\". Copying. \n", src_entity -> d_name, dest);
-
-//             }
-//             char path[MAXDIRNAME] = {'\0'};
-//             strcat(path, source);
-//             strcat(path, "/");
-//             strcat(path, entity->d_name);
-//             listFiles(path);
-//         }
-//         src_dir = readdir(src_dir);
-//     }
-
-//     closedir(src_dir);
-// }
 

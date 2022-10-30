@@ -1,20 +1,21 @@
 #include "backupSetup.h"
 
-int main(int argc, char* argv[]) {
-                                                           
+int main(int argc, char* argv[]) {                                                          
     printf("Source name: \"%s\". \n", argv[1]);
     printf("Dest name: \"%s\". \n\n", argv[2]);
 
-    printf("[____LIST_OF_SORCE____]\n");
-    listFiles(argv[1]);
-    printf("\n[____LIST_OF_DEST____]\n");
-    listFiles(argv[2]);
+    printf("List of source dir in \"file1.txt\". \n");
+    listFiles(argv[1], "file1.txt");
+    printf("List of dest dir in \"file2.txt\". \n");
+    listFiles(argv[2], "file2.txt");
 
-    DIR* src_dir = opendir(argv[1]);
-    DIR* dst_dir = opendir(argv[2]);
-    
-    struct dirent* first_src_dir = readdir(src_dir);
-    printf("First dir in \"%s\" is \"%s\". \n", argv[1], first_src_dir -> d_name);
-    find(first_src_dir, dst_dir);
+    printf("Looking for updated files. \n");
+    update_check(argv[1], 1);
 
+    update_dir(argv[2]);
 }
+
+
+
+
+
