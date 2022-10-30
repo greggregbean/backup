@@ -1,1 +1,0 @@
-./source/seminar programms/1sem/1семинар.txt
